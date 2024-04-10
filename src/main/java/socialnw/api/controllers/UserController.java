@@ -19,7 +19,7 @@ import socialnw.api.services.UserService;
  * 
  */
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api")
 public class UserController {
 	private final UserService userService;
 	
@@ -27,13 +27,13 @@ public class UserController {
 		this.userService = userService;
 	}
 	
-	@PostMapping
+	@PostMapping("users")
 	public ResponseEntity<User> createUser(@RequestBody User user) {
 		User savedUser = userService.save(user);
 		return ResponseEntity.ok(savedUser);
 	}
 	
-	@GetMapping("/{userId}")
+	@GetMapping("users/{userId}")
 	public ResponseEntity<User> getUserById(@Parameter(example = "10") Long userId) {
 		Optional<User> user = userService.findById(userId);
 		if (user.isEmpty()) {
