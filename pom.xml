@@ -11,8 +11,8 @@
 	</parent>
 	<groupId>socialnw</groupId>
 	<artifactId>api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>api</name>
+	<version>0.0.1</version>
+	<name>social-network-api</name>
 	<description>Demo project for Social Network APIs with Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
@@ -50,6 +50,12 @@
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.3.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.32</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -64,6 +70,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>social-network-api</finalName>
 	</build>
 
 </project>
