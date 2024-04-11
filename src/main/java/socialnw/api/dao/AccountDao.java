@@ -12,4 +12,5 @@ import socialnw.api.entities.Account;
 @Repository
 public interface AccountDao extends JpaRepository<Account,Long> {
 
+	Account findByEmail(String email); 
 }

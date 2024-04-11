@@ -25,6 +25,9 @@ public class Account {
 	@Column(name = "user_id")
 	private String userId;
 	
+	@Column(name = "email")
+	private String email;
+	
 	@Column(name = "password")
 	private String password;
 	
