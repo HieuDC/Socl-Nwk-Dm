@@ -41,4 +41,8 @@ public class AccountServiceImpl implements AccountService {
 		accountDao.deleteById(id);;
 	}
 
+	@Override
+	public Optional<Account> findByEmail(String email) {
+		return Optional.ofNullable(accountDao.findByEmail(email));
+	}
 }

@@ -35,4 +35,11 @@ public interface AccountService {
 	 * @param id user's ID
 	 */
 	void deleteById(Long id);
+	
+	/**
+	 * Get the account with specified email
+	 * @param id user's email
+	 * @return the entity
+	 */
+	Optional<Account> findByEmail(String email);
 }

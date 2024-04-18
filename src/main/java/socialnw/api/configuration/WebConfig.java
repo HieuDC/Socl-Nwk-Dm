@@ -1,7 +1,9 @@
 package socialnw.api.configuration;
 
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -36,5 +38,13 @@ public class WebConfig {
 	public PasswordEncoder encoder() {
 		// Default rounds: 10
 		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
+	public MessageSource messageSource() {
+		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+	    messageSource.setBasename("classpath:message");
+	    messageSource.setDefaultEncoding("UTF-8");
+	    return messageSource;
 	}
 }
