@@ -14,7 +14,9 @@ public interface OtpService {
 	
 	/**
 	 * 
+	 * @param email
+	 * @param otp
 	 * @return
 	 */
-	boolean validateOtp();
+	boolean validateOtp(String email, String otp);
 }

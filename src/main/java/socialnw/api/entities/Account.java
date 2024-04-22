@@ -1,6 +1,6 @@
 package socialnw.api.entities;
 
-import java.sql.Date;
+import java.time.Instant;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,5 +36,5 @@ public class Account {
 	private String otp;
 	
 	@Column(name = "otp_exp_time")
-	private Date otpExpTime;
+	private Instant otpExpTime;
 }
