@@ -17,7 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import socialnw.api.dto.LoginDto;
 import socialnw.api.entities.Account;
+import socialnw.api.entities.User;
 import socialnw.api.services.AccountService;
+import socialnw.api.services.OtpService;
+import socialnw.api.services.UserService;
 import socialnw.api.utils.MessageUtil;
 import socialnw.api.utils.ValidationUtil;
 
@@ -32,11 +35,22 @@ public class AccountController {
 	private AccountService accountService;
 	
 	@Autowired
+	private UserService userService; 
+	
+	@Autowired
 	private ValidationUtil validationUtil;
 	
 	@Autowired
 	private MessageUtil messageUtil;
 	
+	@Autowired
+	private OtpService otpService;
+	
+	/**
+	 * 
+	 * @param dto
+	 * @return
+	 */
 	@PostMapping("register")
 	public ResponseEntity<String> register(@RequestBody LoginDto dto) {
 		String email = dto.getEmail().trim();
@@ -57,21 +71,27 @@ public class AccountController {
 			return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
 		}
 		// Create account
+		User newUser = new User();
+		newUser.setEmail(email);
+		newUser = userService.save(newUser);
+		
 		Account newAccount = new Account();
 		newAccount.setEmail(email);
 		newAccount.setPassword(password);
-		accountService.save(newAccount);
+		newAccount.setUserId(newUser.getUserId());
+		newAccount = accountService.save(newAccount);
 		msg = messageUtil.getMessage("MS005", "");
 		return new ResponseEntity<>(msg, HttpStatus.CREATED);
 	}
 
 	@PostMapping("login")
-	public ResponseEntity<Account> login(@RequestBody Map<String, String> params) {
+	public ResponseEntity<String> login(@RequestBody Map<String, String> params) {
 		String email = params.get("email");
 		String password = params.get("password");
 		Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		return ResponseEntity.ok(null);
+		String otp = otpService.generateOtp(email);
+		return new ResponseEntity<>(otp, HttpStatus.OK);
 	}
 	
 	@PostMapping("authenticate")

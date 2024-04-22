@@ -40,7 +40,7 @@ public class ValidationUtil {
 	 */
 	public String validatePassword(String password) {
 		if (!Pattern.compile(PASSWORD_PATTERN).matcher(password).matches()) {
-			return messageUtil.getMessage("MS003", "");
+			return messageUtil.getMessage("MS003", "8");
 		}
 		return "";
 	}

@@ -5,6 +5,7 @@ import java.sql.Date;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -18,7 +19,7 @@ import lombok.Data;
 public class Account {
 	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "account_id")
 	private Long accountId;
 	
@@ -30,9 +31,6 @@ public class Account {
 	
 	@Column(name = "password")
 	private String password;
-	
-	@Column(name = "access_token")
-	private String accessToken;
 	
 	@Column(name = "otp")
 	private String otp;
