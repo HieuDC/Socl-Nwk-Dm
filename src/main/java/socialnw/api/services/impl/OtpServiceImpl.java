@@ -33,7 +33,12 @@ public class OtpServiceImpl implements OtpService {
 			return false;
 		}
 		Account account = accountDao.findByEmail(email);
-		return otp.equals(account.getOtp()) && Instant.now().isBefore(account.getOtpExpTime());
+		if (otp.equals(account.getOtp()) && Instant.now().isBefore(account.getOtpExpTime())) {
+			// Clear OTP
+			accountDao.updateOtpByEmail(email, null, null);
+			return true;
+		}
+		return false;
 	}
 
 }

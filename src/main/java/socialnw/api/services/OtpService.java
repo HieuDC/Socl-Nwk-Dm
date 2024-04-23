@@ -1,22 +1,22 @@
 package socialnw.api.services;
 
 /**
- * 
+ * Service class for handling OTP-related logic
  */
 public interface OtpService {
 
 	/**
-	 * 
-	 * @param email
-	 * @return
+	 * Generate OTP
+	 * @param email user's email
+	 * @return OTP for logging in
 	 */
 	String generateOtp(String email);
 	
 	/**
-	 * 
-	 * @param email
-	 * @param otp
-	 * @return
+	 * Validate OTP
+	 * @param email user's email
+	 * @param otp OTP from request
+	 * @return true if OTP is matched and not expired
 	 */
 	boolean validateOtp(String email, String otp);
 }

@@ -23,11 +23,15 @@ import socialnw.api.dto.LoginDto;
 import socialnw.api.entities.Account;
 import socialnw.api.entities.User;
 import socialnw.api.services.AccountService;
+import socialnw.api.services.JwtService;
 import socialnw.api.services.OtpService;
 import socialnw.api.services.UserService;
 import socialnw.api.utils.MessageUtil;
 import socialnw.api.utils.ValidationUtil;
 
+/**
+ * Controller class for account
+ */
 @RestController
 @RequestMapping("/api")
 public class AccountController {
@@ -53,29 +57,32 @@ public class AccountController {
 	@Autowired
 	private PasswordEncoder encoder;
 	
+	@Autowired
+	private JwtService jwtService;
+	
 	/**
-	 * 
-	 * @param dto
-	 * @return
+	 * Register a new account
+	 * @param dto registered information
+	 * @return result of registration
 	 */
 	@PostMapping("register")
-	public ResponseEntity<String> register(@RequestBody LoginDto dto) {
+	public ResponseEntity<Map<String, String>> register(@RequestBody LoginDto dto) {
 		String email = dto.getEmail().trim();
 		String password = dto.getPassword();
 		// Validate email
 		String msg = validationUtil.validateEmail(email);
 		if (!msg.isEmpty()) {
-			return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(Map.of("message", msg), HttpStatus.BAD_REQUEST);
 		}
 		Optional<Account> acc = accountService.findByEmail(email);
 		if (acc.isPresent()) {
-			msg = messageUtil.getMessage("MS004", "");
-			return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
+			msg = messageUtil.getMessage("MS004", email);
+			return new ResponseEntity<>(Map.of("message", msg), HttpStatus.BAD_REQUEST);
 		}
 		// Validate password
 		msg = validationUtil.validatePassword(password);
 		if (!msg.isEmpty()) {
-			return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(Map.of("message", msg), HttpStatus.BAD_REQUEST);
 		}
 		// Create account
 		User newUser = new User();
@@ -87,34 +94,52 @@ public class AccountController {
 		newAccount.setPassword(encoder.encode(password));
 		newAccount.setUserId(newUser.getUserId());
 		newAccount = accountService.save(newAccount);
-		msg = messageUtil.getMessage("MS005", "");
-		return new ResponseEntity<>(msg, HttpStatus.CREATED);
+		msg = messageUtil.getMessage("MS005", email);
+		return new ResponseEntity<>(Map.of("message", msg), HttpStatus.CREATED);
 	}
 
+	/**
+	 * Handle login logic
+	 * @param dto login information
+	 * @return OTP if login information is valid
+	 */
 	@PostMapping("login")
-	public ResponseEntity<String> login(@RequestBody LoginDto dto) {
+	public ResponseEntity<Map<String, String>> login(@RequestBody LoginDto dto) {
 		String email = dto.getEmail();
 		String password = dto.getPassword();
+		Map<String, String> responseData;
 		try {
 			Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			String otp = otpService.generateOtp(email);
-			return new ResponseEntity<>(otp, HttpStatus.OK);
+			responseData = Map.of("message", messageUtil.getMessage("MS010", ""), "OTP", otp);
+			return new ResponseEntity<>(responseData, HttpStatus.OK);
 		} catch (DisabledException | LockedException ex) {
-			return new ResponseEntity<>(messageUtil.getMessage("MS007", ""), HttpStatus.FORBIDDEN);
+			responseData = Map.of("message", messageUtil.getMessage("MS007", email));
+			return new ResponseEntity<>(responseData, HttpStatus.FORBIDDEN);
 		} catch (BadCredentialsException ex) {
-			return new ResponseEntity<>(messageUtil.getMessage("MS006", ""), HttpStatus.FORBIDDEN);
+			responseData = Map.of("message", messageUtil.getMessage("MS006", ""));
+			return new ResponseEntity<>(responseData, HttpStatus.FORBIDDEN);
 		}
 	}
 	
+	/**
+	 * Handle authentication using OTP
+	 * @param params authentication information
+	 * @return token if authentication is successfully
+	 */
 	@PostMapping("authenticate")
-	public ResponseEntity<String> authenticate(@RequestBody Map<String, String> params) {
-		String email = params.get("email");
+	public ResponseEntity<Map<String, String>> authenticate(@RequestBody Map<String, String> params) {
+		String email = params.get("email").trim();
 		String otp = params.get("otp");
+		Map<String, String> responseData;
 		if (!otpService.validateOtp(email, otp)) {
-			return new ResponseEntity<>("Invalid OTP", HttpStatus.UNAUTHORIZED); // Need WWW-Authenticate header
+			responseData = Map.of("message", messageUtil.getMessage("MS008", ""));
+			return new ResponseEntity<>(responseData, HttpStatus.UNAUTHORIZED); // Need WWW-Authenticate header
 		}
 		// Create token
-		return new ResponseEntity<>("Login successfully", HttpStatus.OK);
+		String token = jwtService.generateToken(email);
+		responseData = Map.of("message", messageUtil.getMessage("MS009", email), "token", token);
+		return new ResponseEntity<>(responseData, HttpStatus.OK);
 	} 
 }
