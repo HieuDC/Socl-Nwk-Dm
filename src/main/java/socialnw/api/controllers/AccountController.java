@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -141,5 +142,28 @@ public class AccountController {
 		String token = jwtService.generateToken(email);
 		responseData = Map.of("message", messageUtil.getMessage("MS009", email), "token", token);
 		return new ResponseEntity<>(responseData, HttpStatus.OK);
-	} 
+	}
+	
+	@PostMapping("reset-password/init")
+	public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> params) {
+		String email = params.get("email").trim();
+		Map<String, String> responseData;
+		Optional<Account> account = accountService.findByEmail(email);
+		if (account.isEmpty()) {
+			responseData = Map.of("message", messageUtil.getMessage("MS011", ""));
+			return new ResponseEntity<>(responseData, HttpStatus.BAD_REQUEST);
+		}
+		// Create token
+		responseData = Map.of("message", messageUtil.getMessage("MS012", ""));
+		return new ResponseEntity<>(responseData, HttpStatus.BAD_REQUEST);
+	}
+	
+	@PostMapping("reset-password/finish")
+	public ResponseEntity<Map<String, String>> resetPassword(@RequestBody Map<String, String> params) {
+		String email = params.get("email").trim();
+		String newPassword = params.get("password");
+		// Check password policy
+		Map<String, String> responseData;
+		return null;
+	}
 }
