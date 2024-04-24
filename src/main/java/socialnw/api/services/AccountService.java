@@ -42,4 +42,11 @@ public interface AccountService {
 	 * @return the entity
 	 */
 	Optional<Account> findByEmail(String email);
+	
+	/**
+	 * Update account's password
+	 * @param email user's email
+	 * @param password new password
+	 */
+	void updatePassword(String email, String password);
 }

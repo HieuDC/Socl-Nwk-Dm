@@ -13,6 +13,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import socialnw.api.entities.Account;
 import socialnw.api.services.JwtService;
 
 @Service
@@ -22,7 +23,7 @@ public class JwtServiceImpl implements JwtService {
 	private String secretKey;
 	
 	@Override
-	public String generateToken(String email) {
+	public String generateAccessToken(String email) {
 		return Jwts.builder().subject(email)
 				.issuedAt(Date.from(Instant.now()))
 				.expiration(Date.from(Instant.now().plusSeconds(6000)))
@@ -51,5 +52,25 @@ public class JwtServiceImpl implements JwtService {
 	private SecretKey getEncryptionKey() {
 		byte[] keyBytes = Decoders.BASE64.decode(secretKey);
 		return Keys.hmacShaKeyFor(keyBytes);
+	}
+
+	@Override
+	public String generatePasswordResetToken(Account account) {
+		byte[] keyBytes = account.getPassword().getBytes();
+		SecretKey key = Keys.hmacShaKeyFor(keyBytes);
+		return Jwts.builder().subject(account.getEmail())
+				.issuedAt(Date.from(Instant.now()))
+				.expiration(Date.from(Instant.now().plusSeconds(300)))
+				.signWith(key, Jwts.SIG.HS256)
+				.compact();
+	}
+
+	@Override
+	public boolean validatePasswordResetToken(String token, Account account) {
+		byte[] keyBytes = account.getPassword().getBytes();
+		SecretKey key = Keys.hmacShaKeyFor(keyBytes);
+		Claims claims = Jwts.parser().verifyWith(key)
+				.build().parseSignedClaims(token).getPayload();
+		return account.getEmail().equals(claims.getSubject()) && claims.getExpiration().after(new Date());
 	}
 }

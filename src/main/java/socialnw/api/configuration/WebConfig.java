@@ -26,6 +26,7 @@ public class WebConfig {
 		// @formatter:off
 		security.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(request -> request.requestMatchers("/api/login", "/api/authenticate").permitAll()
+				.requestMatchers("/api/reset-password/**").permitAll()
 				.requestMatchers("/api/register").permitAll()
 				.requestMatchers("api-testing.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
 				.requestMatchers("/error/**").permitAll()

@@ -32,7 +32,7 @@ public class JwtFilter extends OncePerRequestFilter {
 		String authHeader = request.getHeader("Authorization");
 		String jwtToken = null;
 		String email = null;
-		if (authHeader != null && authHeader.startsWith("Bearer ")) {
+		if (authHeader != null && authHeader.startsWith("Bearer ") && !request.getRequestURI().contains("reset-password")) {
 			jwtToken = authHeader.substring(7);
 			Claims claims = jwtService.extractAllClaims(jwtToken);
 			email = claims.getSubject();

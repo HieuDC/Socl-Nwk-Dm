@@ -21,4 +21,8 @@ public interface AccountDao extends JpaRepository<Account,Long> {
 	@Modifying
 	@Query("UPDATE Account SET otp = ?3, otpExpTime = ?2 WHERE email = ?1")
 	void updateOtpByEmail(String email, Instant expTime, String otp);
+	
+	@Modifying
+	@Query("UPDATE Account SET password = ?2 WHERE email = ?1")
+	void updatePassword(String email, String password);
 }
