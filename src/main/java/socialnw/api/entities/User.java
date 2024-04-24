@@ -39,4 +39,7 @@ public class User {
 	@Column(name = "birthday")
 	@Schema(example = "1994/01/18", format = "yyyy/MM/dd")
 	private Date birthday;
+	
+	@Column(name = "avatar_url")
+	private String avatarUrl;
 }
