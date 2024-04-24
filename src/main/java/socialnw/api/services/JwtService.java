@@ -39,17 +39,17 @@ public interface JwtService {
 	boolean validateToken(String token, UserDetails userDetail);
 	
 	/**
-	 * 
-	 * @param account
-	 * @return
+	 * Generate token for password reset
+	 * @param account account needing password reset
+	 * @return token
 	 */
 	String generatePasswordResetToken(Account account);
 	
 	/**
-	 * 
-	 * @param token
-	 * @param email
-	 * @return
+	 * Validate token for password reset
+	 * @param token input token
+	 * @param account account needing password reset
+	 * @return true if token is valid
 	 */
 	boolean validatePasswordResetToken(String token, Account account);
 }

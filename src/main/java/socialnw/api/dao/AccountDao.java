@@ -11,7 +11,7 @@ import socialnw.api.entities.Account;
 
 
 /**
- * 
+ * DAO class for account entity
  */
 @Repository
 public interface AccountDao extends JpaRepository<Account,Long> {

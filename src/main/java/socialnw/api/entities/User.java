@@ -32,10 +32,6 @@ public class User {
 	@Schema(example = "Do Chi")
 	private String lastName;
 	
-	@Column(name = "email")
-	@Schema(example = "dochihieu@gmail.com")
-	private String email;
-	
 	@Column(name = "phone")
 	@Schema(example = "0987654321")
 	private String phone;

@@ -6,7 +6,7 @@ import socialnw.api.entities.User;
 
 
 /**
- * 
+ * DAO class for user entity
  */
 @Repository
 public interface UserDao extends JpaRepository<User,Long> {

@@ -88,7 +88,6 @@ public class AccountController {
 		}
 		// Create account
 		User newUser = new User();
-		newUser.setEmail(email);
 		newUser = userService.save(newUser);
 		
 		Account newAccount = new Account();
